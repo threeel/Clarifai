@@ -8,20 +8,18 @@
 
 namespace Threeel\Clarifai;
 
-
 class Clarifai
 {
-    
-    
-
     private $client;
     protected $unwrap = false;
 
-    public function __construct(ClarifaiClient $client){
+    public function __construct(ClarifaiClient $client)
+    {
         $this->client = $client;
     }
 
-    public function authorize(){
+    public function authorize()
+    {
         return $this->client->getToken();
     }
 
@@ -31,23 +29,24 @@ class Clarifai
      * @param string $model
      * @return mixed
      */
-    public function tags($url, $model = ClarifaiTagType::GENERIC){
-
-       $request_url =  $this->client->url()
+    public function tags($url, $model = ClarifaiTagType::GENERIC)
+    {
+        $request_url =  $this->client->url()
                             ->onEndpoint('tag')
                             ->withModel($model)
-                            ->withParameter('url',$url)
+                            ->withParameter('url', $url)
                             ->get();
 
         $response = $this->client->get($request_url);
 
-        if ($this->unwrap){
+        if ($this->unwrap) {
             return $this->unwrapTagsResponse($response);
         }
         return $response;
     }
 
-    private function unwrapTagsResponse($response){
+    private function unwrapTagsResponse($response)
+    {
         // if Unwrap is true unwrap the response like array(timestamp,model,doc_id, doc_id_str, url,tag_class,tag_probability,tag_concept_id)
 
         return [
@@ -59,11 +58,13 @@ class Clarifai
      * @param $url
      * @return mixed
      */
-    public function suitability($url){
-        return $this->getTags($url,ClarifaiTagType::NOT_SUITABLE);
+    public function suitability($url)
+    {
+        return $this->getTags($url, ClarifaiTagType::NOT_SUITABLE);
     }
 
-    public function unWrap(){
+    public function unWrap()
+    {
         $this->unwrap = true;
         return $this;
     }
@@ -71,7 +72,8 @@ class Clarifai
     /**
      * @return ClarifaiClient
      */
-    public function client(){
+    public function client()
+    {
         return $this->client;
     }
 }

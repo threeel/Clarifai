@@ -8,7 +8,6 @@
 
 namespace Threeel\Clarifai;
 
-
 class ClarifaiUrl
 {
 
@@ -26,34 +25,37 @@ class ClarifaiUrl
 
     private $endpoint;
 
-    public function __construct(array $options){
-        $this->api_url = array_get($options,'api_url', config('clarifai.api_url'));
-        $this->client_id = array_get($options,'client_id', config('clarifai.client_id'));
-        $this->client_secret = array_get($options,'client_secret',config('clarifai.client_secret'));
-        $this->grant_type = array_get($options,'grand_type',config('clarifai.grant_type'));
-        $this->default_model = array_get($options,'default_model',config('clarifai.default_model'));
+    public function __construct(array $options)
+    {
+        $this->api_url = array_get($options, 'api_url', config('clarifai.api_url'));
+        $this->client_id = array_get($options, 'client_id', config('clarifai.client_id'));
+        $this->client_secret = array_get($options, 'client_secret', config('clarifai.client_secret'));
+        $this->grant_type = array_get($options, 'grand_type', config('clarifai.grant_type'));
+        $this->default_model = array_get($options, 'default_model', config('clarifai.default_model'));
 
-        if ($this->client_id  === null || $this->client_secret === null){
+        if ($this->client_id  === null || $this->client_secret === null) {
             throw new \InvalidArgumentException('client_id or client_secret not set check in the config/clarifai.php');
         }
-
     }
 
-    public function withParameter($key,$value){
+    public function withParameter($key, $value)
+    {
         $this->parameters[$key] = $value;
 
         return $this;
     }
 
-    public function onEndpoint($endpoint){
+    public function onEndpoint($endpoint)
+    {
         $this->endpoint = $endpoint;
 
         return $this;
     }
 
 
-    public function withModel($name = null){
-        if ($name !== null){
+    public function withModel($name = null)
+    {
+        if ($name !== null) {
             $this->parameters['model'] = $name;
         } else {
             $this->parameters['model'] = $this->default_model;
@@ -61,28 +63,31 @@ class ClarifaiUrl
         return $this;
     }
 
-    public function get($endpoint = null,$model = null){
-        if ($endpoint){
+    public function get($endpoint = null, $model = null)
+    {
+        if ($endpoint) {
             $this->onEndpoint($endpoint);
         }
 
-        if ($model){
-          $this->withModel($model);
+        if ($model) {
+            $this->withModel($model);
         }
 
-        if (isset($this->endpoint)){
-         return $this->api_url . $this->endpoint . '/?' . http_build_query($this->parameters);
+        if (isset($this->endpoint)) {
+            return $this->api_url . $this->endpoint . '/?' . http_build_query($this->parameters);
         }
 
         return $this->api_url;
     }
 
 
-    public function languages(){
+    public function languages()
+    {
         return $this->onEndpoint('info/languages')->get();
     }
 
-    public function credentials(){
+    public function credentials()
+    {
         return [
             'client_id'=>$this->client_id,
             'client_secret'=>$this->client_secret,
@@ -94,6 +99,4 @@ class ClarifaiUrl
     {
         return $this->get();
     }
-
-
 }

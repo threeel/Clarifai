@@ -8,7 +8,6 @@
 
 namespace Threeel\Clarifai;
 
-
 class ClarifaiTagType
 {
     const GENERIC = 'general-v1.3';
