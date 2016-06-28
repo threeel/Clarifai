@@ -1,0 +1,46 @@
+{
+    "name": "Threeel/Clarifai",
+    "type": "library",
+    "description": ":package_description",
+    "keywords": [
+        "Threeel",
+        "Clarifai"
+    ],
+    "homepage": "https://github.com/Threeel/Clarifai",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lefteris Kameris",
+            "email": "lefteris.k@3elalliance.com",
+            "homepage": "http://3elalliance.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "illuminate/support": "~5.1",
+        "php" : "~5.5|~7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : "~4.0||~5.0",
+        "scrutinizer/ocular": "~1.1",
+        "squizlabs/php_codesniffer": "~2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Threeel\\Clarifai\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Threeel\\Clarifai\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
