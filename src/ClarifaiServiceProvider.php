@@ -28,7 +28,7 @@ class ClarifaiServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/clarifai.php', 'clarifai');
         \App::bind('clarifai', function ($app) {
             $client = new ClarifaiClient();
-           return new Clarifai($client);
+            return new Clarifai($client);
         });
     }
 }

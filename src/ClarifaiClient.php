@@ -8,30 +8,30 @@
 
 namespace Threeel\Clarifai;
 
-
 use Threeel\Clarifai\Exceptions\AuthorizationException;
 
 class ClarifaiClient
 {
-
     private $url;
     protected $request;
     private $token;
     private $tokenRequest = false;
 
-    public function __construct(array $options = []){
+    public function __construct(array $options = [])
+    {
         $this->url = new ClarifaiUrl($options);
     }
     
     /**
      * Get the Token to be used for the consecutive requests
      */
-    public function getToken(){
+    public function getToken()
+    {
         $url = $this->url->get('token');
         $this->tokenRequest = true;
-        $tokenResult = $this->post( $url, $this->url->credentials() );
+        $tokenResult = $this->post($url, $this->url->credentials());
 
-        if (isset($tokenResult['access_token'])){
+        if (isset($tokenResult['access_token'])) {
             $this->token = $tokenResult['access_token'];
             $this->tokenRequest = false;
             return $this->token;
@@ -40,26 +40,29 @@ class ClarifaiClient
         throw new AuthorizationException($tokenResult['error']);
     }
 
-    public function getAuthorizationHeader(){
-        if (!$this->tokenRequest){
+    public function getAuthorizationHeader()
+    {
+        if (!$this->tokenRequest) {
             $header = 'Authorization: Bearer ';
-                if (!$this->hasToken()){
-                    $this->getToken();
-                }
+            if (!$this->hasToken()) {
+                $this->getToken();
+            }
             return [(string) $header . $this->token];
         }
     }
 
-    public function hasToken(){
+    public function hasToken()
+    {
         return isset($this->token);
     }
 
-    public function url(){
+    public function url()
+    {
         return $this->url;
     }
 
-    public function onModel($name){
-
+    public function onModel($name)
+    {
     }
     /**
      * Prepares the Curl Resource to be Executed
@@ -67,7 +70,8 @@ class ClarifaiClient
      * @param string $method
      * @param array $data
      */
-    private function setup($url, $method = 'GET', array $data = [], $headers = []){
+    private function setup($url, $method = 'GET', array $data = [], $headers = [])
+    {
         try {
             $this->request = curl_init($url);
 
@@ -83,13 +87,13 @@ class ClarifaiClient
             if ($headers !== null) {
                 curl_setopt($this->request, CURLOPT_HTTPHEADER, $headers);
             }
-        } catch (\Exception $ex){
+        } catch (\Exception $ex) {
             throw $ex;
         }
-
     }
 
-    public function isAuthorized(){
+    public function isAuthorized()
+    {
         return ($this->token !== null) ;
     }
 
@@ -97,35 +101,37 @@ class ClarifaiClient
      * Disposes the Curl Resource Handle
      * @param $curl_resource
      */
-    private function destroy($curl_resource){
+    private function destroy($curl_resource)
+    {
         return curl_close($curl_resource);
     }
 
-    public function request($url, $method = 'GET', array $data = []){
+    public function request($url, $method = 'GET', array $data = [])
+    {
         $header = $this->getAuthorizationHeader();
        // dd($header);
-        $this->setup($url,$method, $data,$header);
-        try{
+        $this->setup($url, $method, $data, $header);
+        try {
             $curl_response = curl_exec($this->request);
-            $response = json_decode($curl_response,true);
+            $response = json_decode($curl_response, true);
             $this->destroy($this->request);
 
             return $response;
-        } catch (\Exception $ex){
+        } catch (\Exception $ex) {
             throw $ex;
         }
-
     }
 
     /**
      * Make a GET Request to Clarifai
      * @return mixed
      */
-    public function get($url = null){
-        if (!$url){
-            return $this->request($this->url->get(),'GET');
+    public function get($url = null)
+    {
+        if (!$url) {
+            return $this->request($this->url->get(), 'GET');
         }
-        return $this->request($url,'GET');
+        return $this->request($url, 'GET');
     }
 
     /**
@@ -133,8 +139,9 @@ class ClarifaiClient
      * @param array $data
      * @return mixed
      */
-    public function post($url,array $data){
-        return $this->request($url,'POST',$data);
+    public function post($url, array $data)
+    {
+        return $this->request($url, 'POST', $data);
     }
 
     /**
@@ -142,7 +149,8 @@ class ClarifaiClient
      * @param $name
      * @return KitelyClient
      */
-    public function onService($name){
+    public function onService($name)
+    {
         $this->url->onService($name);
         return $this;
     }
@@ -152,9 +160,10 @@ class ClarifaiClient
      * @param array $parameters
      * @return KitelyClient
      */
-    public function withParameters(array $parameters){
-        foreach ($parameters as $key => $value){
-            $this->withParameter($key,$value);
+    public function withParameters(array $parameters)
+    {
+        foreach ($parameters as $key => $value) {
+            $this->withParameter($key, $value);
         }
         return $this;
     }
@@ -165,8 +174,9 @@ class ClarifaiClient
      * @param string $value
      * @return KitelyClient
      */
-    public function withParameter($key, $value){
-        $this->url->withParameter($key,$value);
+    public function withParameter($key, $value)
+    {
+        $this->url->withParameter($key, $value);
 
         return $this;
     }
@@ -179,6 +189,4 @@ class ClarifaiClient
     {
         return (string) $this->url;
     }
-
-
 }

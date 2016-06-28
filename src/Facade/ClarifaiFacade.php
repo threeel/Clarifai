@@ -10,7 +10,6 @@ namespace Threeel\Clarifai\Facade;
 
 use Illuminate\Support\Facades\Facade;
 
-
 class ClarifaiFacade extends Facade
 {
     /**
